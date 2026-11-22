@@ -21,16 +21,16 @@
         </a>
         <button class="workout-menu-button" id="workout-menu-button" type="button" aria-expanded="false" aria-controls="workout-menu">
           <span class="menu-icon" aria-hidden="true"><i></i><i></i></span>
-          <span>EVEN DAY</span>
+          <span id="current-plan-name">TIER I</span>
           <span class="menu-chevron" aria-hidden="true">⌄</span>
         </button>
         <div class="topbar-status"><span class="status-dot"></span> TRAINING MODE</div>
       </header>
 
-      <section class="workout-menu" id="workout-menu" aria-label="Choose a workout" hidden>
+      <section class="workout-menu" id="workout-menu" aria-label="Choose a workout plan" hidden>
         <div class="menu-heading">
-          <span class="eyebrow">YOUR SESSION</span>
-          <span class="menu-count">EVEN DAY · 6 DRILLS</span>
+          <span class="eyebrow">SELECT PLAN</span>
+          <span class="menu-count" id="drill-count">6 DRILLS</span>
         </div>
         <div class="workout-list" id="workout-list"></div>
       </section>
@@ -48,8 +48,8 @@
         </div>
 
         <div class="title-block">
-          <p class="eyebrow title-eyebrow">EVEN DAY WORKOUT <span>·</span> YOUR FIELD SESSION</p>
-          <h1 id="workout-title"><span>SQUARE CONE</span> <em>DRILLS</em></h1>
+          <p class="eyebrow title-eyebrow"><span id="current-plan-title">TIER I</span> <span>·</span> <span id="current-drill-name">SQUARE CONE</span></p>
+          <h1 id="workout-title"><span id="drill-title-main">SQUARE CONE</span> <em id="drill-title-em">DRILLS</em></h1>
           <p class="title-subtitle" id="workout-subtitle">CHANGE DIRECTION. MOVE FASTER. PLAY STRONGER.</p>
         </div>
 
@@ -257,6 +257,17 @@
           <div class="stat">
             <svg class="stat-icon" viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="24" r="15" /><path d="M22 16v9l6 4M17 3h10M22 3v5M33 10l4-4" /></svg>
             <div><strong id="metric-three-title">REST</strong><span id="metric-three-detail">20–30 SEC</span></div>
+          </div>
+        </section>
+
+        <section class="drill-nav-display" id="drill-nav-display" aria-label="Drill navigation" hidden>
+          <div class="nav-item nav-prev">
+            <span class="nav-label">PREVIOUS</span>
+            <span class="nav-name" id="prev-drill-name"></span>
+          </div>
+          <div class="nav-item nav-next">
+            <span class="nav-label">NEXT UP</span>
+            <span class="nav-name" id="next-drill-name"></span>
           </div>
         </section>
 
