@@ -467,6 +467,7 @@ function initializeState() {
 }
 
 let completed = [];
+let currentMobilityVariationIndex = 0;  // Track which mobility exercise is being viewed
 initializeState();
 
 // ============================================
@@ -724,7 +725,8 @@ function renderVariations(drill) {
     }
     const item = document.createElement("li");
     const isSelected = selectedVariations.has(index);
-    const isLocked = index > nextVariation;
+    // For mobility layout, never lock variations (allow viewing any exercise)
+    const isLocked = drill.layout === "mobility" ? false : index > nextVariation;
     item.className = `variation-item${isSelected ? " is-selected" : ""}${index === nextVariation ? " is-next" : ""}`;
     const select = document.createElement("button");
     select.className = "variation-select";
@@ -746,6 +748,14 @@ function renderVariations(drill) {
     choice.textContent = "✓";
     select.append(number, name, choice);
     select.addEventListener("click", () => {
+      // For mobility layout, just show the image (allow viewing any variation)
+      if (drill.layout === "mobility") {
+        currentMobilityVariationIndex = index;
+        render();
+        variationList.querySelectorAll(".variation-select")[index].focus();
+        return;
+      }
+      
       const currentSelections = getSelectedVariations(activeWorkout);
       if (selectedVariations.has(index)) {
         for (const selectedIndex of currentSelections) {
@@ -763,32 +773,35 @@ function renderVariations(drill) {
         progressSaved = saveProgress();
       }
       render();
-      if (!selectionsSaved) finishNote.textContent = "VARIATION SELECTIONS COULD NOT BE SAVED.";
-      else if (!progressSaved) finishNote.textContent = "PROGRESS COULD NOT BE SAVED ON THIS DEVICE.";
+      const finishNote = document.querySelector("#finish-note");
+      if (finishNote) {
+        if (!selectionsSaved) finishNote.textContent = "VARIATION SELECTIONS COULD NOT BE SAVED.";
+        else if (!progressSaved) finishNote.textContent = "PROGRESS COULD NOT BE SAVED ON THIS DEVICE.";
+      }
       variationList.querySelectorAll(".variation-select")[index].focus();
     });
     item.append(select);
     variationList.append(item);
   });
-  document.querySelector("#variation-count").textContent = String(drill.variations.length);
+  const variationCount = document.querySelector("#variation-count");
+  if (variationCount) variationCount.textContent = String(drill.variations.length);
 }
 
 function renderExerciseImage(drill) {
   const diagramWrap = document.querySelector("#diagram-wrap");
   if (!diagramWrap || drill.layout !== "mobility") return;
   
-  const selectedVariations = getSelectedVariations();
-  const nextIndex = drill.variations.findIndex((_, index) => !selectedVariations.has(index));
-  const previewIndex = nextIndex === -1 ? drill.variations.length - 1 : nextIndex;
-  const variation = drill.variations[previewIndex];
+  const variation = drill.variations[currentMobilityVariationIndex];
   
   if (!variation || !variation.image) return;
+  
+  console.log(`Rendering image for variation ${currentMobilityVariationIndex}: ${variation.name}`);
   
   diagramWrap.replaceChildren();
   
   const img = document.createElement("img");
   img.src = variation.image;
-  img.alt = variation.name || `Exercise ${previewIndex + 1}`;
+  img.alt = variation.name || `Exercise ${currentMobilityVariationIndex + 1}`;
   img.style.width = "100%";
   img.style.height = "auto";
   img.style.maxHeight = "400px";
@@ -803,7 +816,19 @@ function updateRoutePreview(drill) {
   const previewIndex = nextIndex === -1 ? drill.variations.length - 1 : nextIndex;
   const previewLabel = nextIndex === -1 ? "LAST UP" : "NEXT UP";
 
-  if (drill.layout === "lane") {
+  if (drill.layout === "mobility") {
+    const diagramDesc = document.querySelector("#diagram-description");
+    if (diagramDesc) {
+      diagramDesc.textContent =
+        `${drill.variations[currentMobilityVariationIndex].name}. ${drill.variations[currentMobilityVariationIndex].reps}`;
+    }
+    // Also update the preview label for mobility layout
+    const previewLabel = document.querySelector("#variation-preview-label");
+    if (previewLabel) {
+      previewLabel.textContent = `VARIATION ${currentMobilityVariationIndex + 1}: ${drill.variations[currentMobilityVariationIndex].name}`;
+    }
+    return; // Skip all other layout logic for mobility
+  } else if (drill.layout === "lane") {
     const pattern = drill.lanePatterns[previewIndex];
     const laneXs = pattern.directions.length === 1 ? [380] : pattern.directions.length === 2 ? [360, 400] : [350, 380, 410];
     const labelOffsets = pattern.directions.length === 1 ? [24] : pattern.directions.length === 2 ? [-24, 24] : [-20, 12, 20];
@@ -1136,6 +1161,12 @@ function renderProgress() {
 
 function render() {
   const drill = currentPlanData.drills[activeWorkout];
+  
+  // Reset mobility variation index when switching drills
+  if (drill.layout === "mobility") {
+    currentMobilityVariationIndex = 0;
+  }
+  
   const hasDetails = Boolean(drill.variations);
   const selectedVariations = getSelectedVariations();
   const titleMatch = drill.title.match(/^(.*?)(?:\s+(Drills|Drill))?$/);
@@ -1192,17 +1223,27 @@ function render() {
   document.querySelector("#stats-row").hidden = !hasDetails;
   document.querySelector("#details-card").hidden = !hasDetails;
   document.querySelector("#finish-wrap").hidden = !hasDetails;
-  document.querySelector("#diagram-title").textContent = `${drill.title} drill layout`;
-  document.querySelector("#square-layout").toggleAttribute("hidden", drill.layout !== "square");
-  document.querySelector("#lane-layout").toggleAttribute("hidden", drill.layout !== "lane");
-  document.querySelector("#t-cone-layout").toggleAttribute("hidden", drill.layout !== "t-cone");
-  document.querySelector("#w-cone-layout").toggleAttribute("hidden", drill.layout !== "w-cone");
-  document.querySelector("#plyometric-layout").toggleAttribute("hidden", drill.layout !== "plyometric");
-  document.querySelector("#ladder-layout").toggleAttribute("hidden", drill.layout !== "ladder");
+  const diagramTitle = document.querySelector("#diagram-title");
+  if (diagramTitle) diagramTitle.textContent = `${drill.title} drill layout`;
+  const toggleElement = (selector, condition) => {
+    const el = document.querySelector(selector);
+    if (el) el.toggleAttribute("hidden", condition);
+  };
+  toggleElement("#square-layout", drill.layout !== "square");
+  toggleElement("#lane-layout", drill.layout !== "lane");
+  toggleElement("#t-cone-layout", drill.layout !== "t-cone");
+  toggleElement("#w-cone-layout", drill.layout !== "w-cone");
+  toggleElement("#plyometric-layout", drill.layout !== "plyometric");
+  toggleElement("#ladder-layout", drill.layout !== "ladder");
   if (hasDetails) {
     drill.metrics.forEach(([title, detail], index) => {
-      document.querySelector(`#metric-${["one", "two", "three"][index]}-title`).textContent = title;
-      document.querySelector(`#metric-${["one", "two", "three"][index]}-detail`).textContent = detail;
+      const metricLabel = ["one", "two", "three"][index];
+      if (metricLabel) {
+        const titleEl = document.querySelector(`#metric-${metricLabel}-title`);
+        const detailEl = document.querySelector(`#metric-${metricLabel}-detail`);
+        if (titleEl) titleEl.textContent = title;
+        if (detailEl) detailEl.textContent = detail;
+      }
     });
     document.querySelector("#tab-variations").textContent = drill.layout === "square" ? "DRILL VARIATIONS" : "DRILL CHECKLIST";
     renderSetupAndCoaching(drill);
