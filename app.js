@@ -1073,9 +1073,9 @@ function render() {
       document.querySelector(`#metric-${["one", "two", "three"][index]}-detail`).textContent = detail;
     });
     document.querySelector("#tab-variations").textContent = drill.layout === "square" ? "DRILL VARIATIONS" : "DRILL CHECKLIST";
-    renderSetupAndCoaching(workout);
-    renderVariations(workout);
-    updateRoutePreview(workout);
+    renderSetupAndCoaching(drill);
+    renderVariations(drill);
+    updateRoutePreview(drill);
   }
 
   const allVariationsChecked = hasDetails && selectedVariations.size === drill.variations.length;
