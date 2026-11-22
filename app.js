@@ -1129,95 +1129,9 @@ function activateTab(index, tabs, panels) {
   });
 }
 
-
-
-
 // ============================================
 // EVENT LISTENERS & INITIALIZATION
 // ============================================
-
-// Menu button
-if (menuButton) {
-  menuButton.addEventListener("click", () => {
-    if (workoutMenuElement) {
-      workoutMenuElement.hidden = !workoutMenuElement.hidden;
-      menuButton.setAttribute("aria-expanded", String(!workoutMenuElement.hidden));
-    }
-  });
-}
-
-// Back button (previous drill)
-if (backButton) {
-  backButton.addEventListener("click", () => {
-    navigatePreviousDrill();
-    if (workoutMenuElement) {
-      workoutMenuElement.hidden = true;
-      menuButton.setAttribute("aria-expanded", "false");
-    }
-  });
-}
-
-// Close menu when clicking outside
-document.addEventListener("click", (event) => {
-  if (workoutMenuElement && !workoutMenuElement.hidden && 
-      !workoutMenuElement.contains(event.target) && 
-      !menuButton.contains(event.target)) {
-    workoutMenuElement.hidden = true;
-    menuButton.setAttribute("aria-expanded", "false");
-  }
-});
-
-// Escape key closes menu
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && workoutMenuElement && !workoutMenuElement.hidden) {
-    workoutMenuElement.hidden = true;
-    menuButton.setAttribute("aria-expanded", "false");
-    menuButton.focus();
-  }
-});
-
-// Tab navigation
-tabs.forEach((tab, index) => {
-  tab.addEventListener("click", () => activateTab(index));
-  tab.addEventListener("keydown", (event) => {
-    if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
-      event.preventDefault();
-      const next = (index + (event.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length;
-      activateTab(next);
-      tabs[next].focus();
-    }
-  });
-});
-
-// Finish button
-if (finishButton) {
-  finishButton.addEventListener("click", () => {
-    activeWorkout += 1;
-    render();
-  });
-}
-
-// Keyboard navigation
-document.addEventListener("keydown", (event) => {
-  if (event.key === "ArrowRight") {
-    navigateNextDrill();
-  } else if (event.key === "ArrowLeft") {
-    navigatePreviousDrill();
-  }
-});
-
-// Tab selection function
-function activateTab(index, tabs, panels) {
-  tabs.forEach((tab, tabIndex) => {
-    const active = tabIndex === index;
-    tab.classList.toggle("is-active", active);
-    tab.setAttribute("aria-selected", String(active));
-    tab.tabIndex = active ? 0 : -1;
-    if (panels[tabIndex]) {
-      panels[tabIndex].hidden = !active;
-    }
-  });
-}
 
 // Initialize
 document.addEventListener("DOMContentLoaded", () => {
