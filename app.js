@@ -251,12 +251,36 @@ const hipMobilityDrills = [
       "Focus on smooth, controlled movements.",
     ],
     variations: [
-      "1. Side-Lying Hip CAR (6 reps each side)",
-      "2. Quadruped Hip CAR (6 reps each side)",
-      "3. Hip External Rotation ISO Hold (20 sec each side)",
-      "4. Hip Extension ISO Hold (20 sec each side)",
-      "5. Hip 90/90 to Figure 4 (5 reps each side)",
-      "6. Hip Airplane (10 reps each side)",
+      {
+        name: "Side-Lying Hip CAR",
+        reps: "6 reps each side",
+        image: "image-52674f973af4f26f.png"
+      },
+      {
+        name: "Quadruped Hip CAR",
+        reps: "6 reps each side",
+        image: "image-d2d7f4860f531432.png"
+      },
+      {
+        name: "Hip External Rotation ISO Hold",
+        reps: "20 sec each side",
+        image: "image-57dce568e00f01b9.png"
+      },
+      {
+        name: "Hip Extension ISO Hold",
+        reps: "20 sec each side",
+        image: "image-351d88accc8ec4bb.png"
+      },
+      {
+        name: "Hip 90/90 to Figure 4",
+        reps: "5 reps each side",
+        image: "image-5ba126fb816f5978.png"
+      },
+      {
+        name: "Standing Hip Airplane",
+        reps: "10 reps each side",
+        image: "image-cdec12e6bc601282.png"
+      }
     ],
   },
 ];
@@ -688,8 +712,8 @@ function renderVariations(drill) {
   const itemName = drill.layout === "square" ? "variation" : "drill";
   let previousGroup = "";
   drill.variations.forEach((variation, index) => {
-    const variationGroup = typeof variation === "string" ? "" : variation.group;
-    const variationLabel = typeof variation === "string" ? variation : variation.label;
+    const variationGroup = typeof variation === "string" ? "" : (variation.group || "");
+    const variationLabel = typeof variation === "string" ? variation.replace(/^\d+\.\s*/, "") : (variation.label || variation.name);
     const accessibleLabel = variationGroup ? `${variationGroup} — ${variationLabel}` : variationLabel;
     if (variationGroup && variationGroup !== previousGroup) {
       const heading = document.createElement("li");
@@ -747,6 +771,30 @@ function renderVariations(drill) {
     variationList.append(item);
   });
   document.querySelector("#variation-count").textContent = String(drill.variations.length);
+}
+
+function renderExerciseImage(drill) {
+  const diagramWrap = document.querySelector("#diagram-wrap");
+  if (!diagramWrap || drill.layout !== "mobility") return;
+  
+  const selectedVariations = getSelectedVariations();
+  const nextIndex = drill.variations.findIndex((_, index) => !selectedVariations.has(index));
+  const previewIndex = nextIndex === -1 ? drill.variations.length - 1 : nextIndex;
+  const variation = drill.variations[previewIndex];
+  
+  if (!variation || !variation.image) return;
+  
+  diagramWrap.replaceChildren();
+  
+  const img = document.createElement("img");
+  img.src = variation.image;
+  img.alt = variation.name || `Exercise ${previewIndex + 1}`;
+  img.style.width = "100%";
+  img.style.height = "auto";
+  img.style.maxHeight = "400px";
+  img.style.objectFit = "contain";
+  
+  diagramWrap.append(img);
 }
 
 function updateRoutePreview(drill) {
@@ -1160,6 +1208,7 @@ function render() {
     renderSetupAndCoaching(drill);
     renderVariations(drill);
     updateRoutePreview(drill);
+    renderExerciseImage(drill);
   }
 
   const allVariationsChecked = hasDetails && selectedVariations.size === drill.variations.length;
