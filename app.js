@@ -350,7 +350,6 @@ function setCurrentPlan(planId) {
   
   // Reset active workout to 0 and reload progress for this plan
   activeWorkout = 0;
-  loadProgress();
   selectedVariationsByWorkout = currentPlanData.drills.map((drill, index) =>
     drill.variations ? readSelectedVariations(getStorageKeyForDrill(index), drill.variations.length) : new Set()
   );
