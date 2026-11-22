@@ -455,6 +455,37 @@ function getProgressStorageKey() {
 let activeWorkout = 0;
 let selectedVariationsByWorkout = [];
 
+// Migrate old progress data to new plan-aware format
+function migrateOldProgressData() {
+  try {
+    // Check for old-format keys that might not have the plan prefix
+    const oldKeys = ["fieldwork-completed", "workout-completed", "drills-completed"];
+    
+    for (const oldKey of oldKeys) {
+      const oldData = localStorage.getItem(oldKey);
+      if (oldData) {
+        try {
+          const parsed = JSON.parse(oldData);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            // Found old progress data - migrate it to the new Tier I plan key
+            const newKey = `fieldwork-plan-tier-i-completed`;
+            if (!localStorage.getItem(newKey)) {
+              // Only migrate if new key doesn't exist
+              localStorage.setItem(newKey, JSON.stringify(parsed));
+              console.log(`Migrated progress data from ${oldKey} to ${newKey}`);
+            }
+            // Don't delete old key - leave it as backup
+          }
+        } catch (e) {
+          console.error(`Error parsing old data from ${oldKey}:`, e);
+        }
+      }
+    }
+  } catch (e) {
+    console.error("Error during progress migration:", e);
+  }
+}
+
 // Initialize state
 function initializeState() {
   selectedVariationsByWorkout = currentPlanData.drills.map((drill, index) =>
@@ -468,6 +499,7 @@ function initializeState() {
 
 let completed = [];
 let currentMobilityVariationIndex = 0;  // Track which mobility exercise is being viewed
+migrateOldProgressData();  // Migrate old progress data before initializing state
 initializeState();
 
 // ============================================
