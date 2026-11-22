@@ -1092,6 +1092,7 @@ function render() {
     ? "DRILL COMPLETE. READY FOR THE NEXT ONE?"
     : allVariationsChecked ? `ALL ${checklistLabel} CHECKED. READY TO MOVE ON.` : `CHECK OFF EACH ${checklistItem}, THEN MOVE ON.`;
   renderProgress();
+  renderNavigationDisplay();
   renderMenu();
 }
 
