@@ -224,6 +224,181 @@ const drillsData = [
 ];
 
 // ============================================
+// HIP MOBILITY PRIMER DRILLS
+// ============================================
+const hipMobilityDrills = [
+  {
+    title: "Side-Lying Hip CAR",
+    layout: "mobility",
+    category: ["Mobility", "Hip Flexibility"],
+    subtitle: "Isolate hip movement. Build full range of motion control.",
+    metrics: [
+      ["6 REPS", "EACH SIDE"],
+      ["NO EQUIPMENT", "BODY WEIGHT"],
+      ["REST", "10 SEC"],
+    ],
+    setup: [
+      ["POSITION", "Side-lying", "Lie on your side to isolate movement at the hip."],
+      ["WORK", "6 reps each side", "Complete all reps on one side, then switch."],
+      ["MOVEMENT", "Circle motion", "1 rep = 1 circle in each direction (2 total circles)."],
+      ["RECOVERY", "10 seconds", "Rest briefly between sides."],
+    ],
+    coachingSummary: "Lie on your side and isolate movement at the hip. Slowly move the top leg in a circle through the hip's full range of motion with control.",
+    coaching: [
+      "Isolate movement at the hip.",
+      "Move slowly through full range of motion.",
+      "Maintain control throughout the movement.",
+      "Complete circles in both directions.",
+    ],
+    variations: [
+      "Circle - Forward Direction",
+      "Circle - Reverse Direction",
+    ],
+  },
+  {
+    title: "Quadruped Hip CAR",
+    layout: "mobility",
+    category: ["Mobility", "Hip Flexibility"],
+    subtitle: "Full-range hip mobility from hands and knees.",
+    metrics: [
+      ["6 REPS", "EACH SIDE"],
+      ["NO EQUIPMENT", "BODY WEIGHT"],
+      ["REST", "10 SEC"],
+    ],
+    setup: [
+      ["POSITION", "Hands and knees", "Start on hands and knees to isolate hip movement."],
+      ["WORK", "6 reps each side", "Complete all reps on one side, then switch."],
+      ["MOVEMENT", "Circle motion", "1 rep = 1 circle in each direction (2 total circles)."],
+      ["RECOVERY", "10 seconds", "Rest briefly between sides."],
+    ],
+    coachingSummary: "Start on hands and knees and isolate movement at the hip. Slowly move the leg in a circle through the hip's full range of motion with control.",
+    coaching: [
+      "Start on hands and knees.",
+      "Isolate movement at the hip.",
+      "Move slowly through full range of motion.",
+      "Maintain control and stability.",
+    ],
+    variations: [
+      "Circle - Forward Direction",
+      "Circle - Reverse Direction",
+    ],
+  },
+  {
+    title: "Hip External Rotation ISO Hold",
+    layout: "mobility",
+    category: ["Mobility", "Stability"],
+    subtitle: "Build hip external rotator strength and control.",
+    metrics: [
+      ["20 SEC", "EACH SIDE"],
+      ["NO EQUIPMENT", "BODY WEIGHT"],
+      ["REST", "10 SEC"],
+    ],
+    setup: [
+      ["POSITION", "Side-lying with bent leg", "Start in side-lying position with bottom leg flexed at hip."],
+      ["MOVEMENT", "External rotation", "Actively externally rotate the bottom hip (foot comes up off floor)."],
+      ["HOLD", "20 seconds", "Hold the rotation for the prescribed time interval."],
+      ["RECOVERY", "10 seconds", "Rest briefly between sides."],
+    ],
+    coachingSummary: "Start in side-lying position with bottom leg flexed at hip. Actively externally rotate the bottom hip and hold for time.",
+    coaching: [
+      "Isolate movement at the hip.",
+      "Actively rotate the hip externally.",
+      "Bottom foot should come up off the floor.",
+      "Maintain tension throughout the hold.",
+    ],
+    variations: [
+      "Hold - Maximum External Rotation",
+    ],
+  },
+  {
+    title: "Hip Extension ISO Hold",
+    layout: "mobility",
+    category: ["Mobility", "Stability"],
+    subtitle: "Strengthen hip extensors and build stability.",
+    metrics: [
+      ["20 SEC", "EACH SIDE"],
+      ["NO EQUIPMENT", "BODY WEIGHT"],
+      ["REST", "10 SEC"],
+    ],
+    setup: [
+      ["POSITION", "Hands and knees", "Start on hands and knees position."],
+      ["MOVEMENT", "Hip extension", "Tuck one knee under torso, extend the other leg behind you."],
+      ["HOLD", "20 seconds", "Actively lift extended leg to end-range and hold for time."],
+      ["RECOVERY", "10 seconds", "Rest briefly between sides."],
+    ],
+    coachingSummary: "Start on hands and knees with one knee tucked under torso and the other leg extended behind you. Actively lift the extended leg to end-range and hold.",
+    coaching: [
+      "Maintain hands and knees position.",
+      "Actively lift the extended leg.",
+      "Hold at end-range for the prescribed time.",
+      "Maintain a braced core throughout.",
+    ],
+    variations: [
+      "Hold - Maximum Extension",
+    ],
+  },
+  {
+    title: "Hip 90/90 to Figure 4",
+    layout: "mobility",
+    category: ["Mobility", "Hip Flexibility"],
+    subtitle: "Deep hip stretch and mobility work through end-range.",
+    metrics: [
+      ["5 REPS", "EACH SIDE"],
+      ["NO EQUIPMENT", "BODY WEIGHT"],
+      ["REST", "10 SEC"],
+    ],
+    setup: [
+      ["POSITION", "Seated 90/90 position", "Start in a 90/90 position (both hips and knees at 90 degrees)."],
+      ["MOVEMENT", "Rotation and stretch", "Actively lift rear leg, rotating through end-range mobility."],
+      ["HOLD", "Stretched position", "Hold each rep momentarily at the end range."],
+      ["OPTIONAL", "Yoga block assist", "Use a yoga block to help lift your knee high if needed."],
+      ["RECOVERY", "10 seconds", "Rest briefly between sides."],
+    ],
+    coachingSummary: "Start in a 90/90 position. Actively lift the rear leg, rotating through the hip's end-range mobility until rear leg is pointing straight ahead.",
+    coaching: [
+      "Start in 90/90 position.",
+      "Actively lift rear leg through end-range.",
+      "Maintain a braced core.",
+      "Return to starting position and repeat.",
+      "Optional: use yoga block to help lift knee high.",
+    ],
+    variations: [
+      "Rotation - Full Range",
+    ],
+  },
+  {
+    title: "Hip Airplane",
+    layout: "mobility",
+    category: ["Mobility", "Balance"],
+    subtitle: "Single-leg balance with dynamic hip mobility work.",
+    metrics: [
+      ["10 REPS", "EACH SIDE"],
+      ["NO EQUIPMENT", "BODY WEIGHT"],
+      ["REST", "10 SEC"],
+    ],
+    setup: [
+      ["POSITION", "Standing on one leg", "Stand holding onto squat rack or other equipment for support."],
+      ["MOVEMENT", "Hip rotation and extension", "Keeping legs straight, raise one leg back behind you."],
+      ["ROTATE", "Dynamic rotation", "Hold for 1–2 sec, then slowly reverse the movement."],
+      ["COMPLETE", "One side then switch", "Complete all reps on one side, then switch."],
+      ["RECOVERY", "10 seconds", "Rest briefly between sides."],
+    ],
+    coachingSummary: "Stand on one leg holding equipment for support. Keeping legs straight, raise one leg back behind you, rotating hips and torso toward the lifted leg. Hold briefly, then reverse.",
+    coaching: [
+      "Stand on one leg for balance.",
+      "Keep legs straight throughout.",
+      "Raise leg back behind you dynamically.",
+      "Rotate hips and torso toward lifted leg.",
+      "Hold briefly at end-range (1–2 seconds).",
+      "Slowly reverse and return to start.",
+    ],
+    variations: [
+      "Airplane - Full Range Extension",
+    ],
+  },
+];
+
+// ============================================
 // WORKOUT PLANS (All 16 Plans)
 // ============================================
 const workoutPlans = [
@@ -255,7 +430,7 @@ const workoutPlans = [
     id: "hip-mobility-primer",
     name: "Hip Mobility Primer",
     description: "Warm-up for hip flexibility",
-    drills: drillsData
+    drills: hipMobilityDrills
   },
   {
     id: "fast-twitch-activation",
