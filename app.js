@@ -376,20 +376,20 @@ function getProgressStorageKey() {
 }
 
 // ============================================
-// DOM ELEMENT REFERENCES
+// DOM ELEMENT REFERENCES (queried after DOM loads - see DOMContentLoaded handler)
 // ============================================
-const backButton = document.querySelector("#back-button");
-const menuButton = document.querySelector("#workout-menu-button");
-const workoutMenuElement = document.querySelector("#workout-menu");
-const workoutList = document.querySelector("#workout-list");
-const variationList = document.querySelector("#variation-list");
-const progressDots = document.querySelector("#progress-dots");
-const finishButton = document.querySelector("#finish-button");
-const finishLabel = document.querySelector("#finish-label");
-const finishNote = document.querySelector("#finish-note");
-const sessionProgress = document.querySelector("#session-progress");
-const tabs = [...document.querySelectorAll(".tab")];
-const panels = [...document.querySelectorAll(".tab-panel")];
+// const backButton = document.querySelector("#back-button");
+// const menuButton = document.querySelector("#workout-menu-button");
+// const workoutMenuElement = document.querySelector("#workout-menu");
+// const workoutList = document.querySelector("#workout-list");
+// const variationList = document.querySelector("#variation-list");
+// const progressDots = document.querySelector("#progress-dots");
+// const finishButton = document.querySelector("#finish-button");
+// const finishLabel = document.querySelector("#finish-label");
+// const finishNote = document.querySelector("#finish-note");
+// const sessionProgress = document.querySelector("#session-progress");
+// const tabs = [...document.querySelectorAll(".tab")];
+// const panels = [...document.querySelectorAll(".tab-panel")];
 
 let activeWorkout = 0;
 let selectedVariationsByWorkout = [];
@@ -1030,6 +1030,13 @@ function render() {
   const hasDetails = Boolean(drill.variations);
   const selectedVariations = getSelectedVariations();
   const titleMatch = drill.title.match(/^(.*?)(?:\s+(Drills|Drill))?$/);
+  
+  // Query DOM elements (lazy load after DOM is ready)
+  const backButton = document.querySelector("#back-button");
+  const finishButton = document.querySelector("#finish-button");
+  const finishLabel = document.querySelector("#finish-label");
+  const finishNote = document.querySelector("#finish-note");
+  
   document.querySelector("#workout-title span").textContent = titleMatch[1];
   document.querySelector("#workout-title em").textContent = titleMatch[2] || "";
   document.querySelector("#workout-subtitle").textContent = hasDetails
@@ -1049,10 +1056,12 @@ function render() {
   });
 
   document.querySelector("#drill-number").textContent = String(activeWorkout + 1);
-  backButton.disabled = activeWorkout === 0;
-  backButton.setAttribute("aria-label", activeWorkout === 0
-    ? "No previous workout"
-    : `Previous workout: ${currentPlanData.drills[activeWorkout - 1].title}`);
+  if (backButton) {
+    backButton.disabled = activeWorkout === 0;
+    backButton.setAttribute("aria-label", activeWorkout === 0
+      ? "No previous workout"
+      : `Previous workout: ${currentPlanData.drills[activeWorkout - 1].title}`);
+  }
   document.querySelector("#field-card").setAttribute("aria-label", hasDetails ? `${drill.title} drill layout` : `${drill.title} details unavailable`);
   document.querySelector("#diagram-wrap").hidden = !hasDetails;
   document.querySelector("#unavailable-message").hidden = hasDetails;
@@ -1081,86 +1090,44 @@ function render() {
   const allVariationsChecked = hasDetails && selectedVariations.size === drill.variations.length;
   const isComplete = completed.includes(activeWorkout);
   const hasNextWorkout = activeWorkout < currentPlanData.drills.length - 1;
-  finishButton.classList.toggle("is-complete", isComplete);
-  finishButton.disabled = !hasDetails || !allVariationsChecked || !hasNextWorkout;
+  if (finishButton) {
+    finishButton.classList.toggle("is-complete", isComplete);
+    finishButton.disabled = !hasDetails || !allVariationsChecked || !hasNextWorkout;
+  }
   const checklistLabel = drill.layout === "square" ? "VARIATIONS" : "DRILLS";
   const checklistItem = drill.layout === "square" ? "VARIATION" : "DRILL";
-  finishLabel.textContent = allVariationsChecked
-    ? hasNextWorkout ? "NEXT EXERCISE" : "SESSION COMPLETE"
-    : `CHECK OFF ALL ${drill.variations?.length || 5} ${checklistLabel}`;
-  finishNote.textContent = isComplete
-    ? "DRILL COMPLETE. READY FOR THE NEXT ONE?"
-    : allVariationsChecked ? `ALL ${checklistLabel} CHECKED. READY TO MOVE ON.` : `CHECK OFF EACH ${checklistItem}, THEN MOVE ON.`;
+  if (finishLabel) {
+    finishLabel.textContent = allVariationsChecked
+      ? hasNextWorkout ? "NEXT EXERCISE" : "SESSION COMPLETE"
+      : `CHECK OFF ALL ${drill.variations?.length || 5} ${checklistLabel}`;
+  }
+  if (finishNote) {
+    finishNote.textContent = isComplete
+      ? "DRILL COMPLETE. READY FOR THE NEXT ONE?"
+      : allVariationsChecked ? `ALL ${checklistLabel} CHECKED. READY TO MOVE ON.` : `CHECK OFF EACH ${checklistItem}, THEN MOVE ON.`;
+  }
   renderProgress();
   renderNavigationDisplay();
   renderMenu();
 }
 
-menuButton.addEventListener("click", () => {
-  menu.hidden = !menu.hidden;
-  menuButton.setAttribute("aria-expanded", String(!menu.hidden));
-});
+// All event listeners are set up in the DOMContentLoaded handler below
 
-backButton.addEventListener("click", () => {
-  if (activeWorkout === 0) return;
-  activeWorkout -= 1;
-  menu.hidden = true;
-  menuButton.setAttribute("aria-expanded", "false");
-  render();
-});
+// ============================================
+// UTILITY FUNCTIONS
+// ============================================
 
-document.addEventListener("click", (event) => {
-  if (!menu.hidden && !menu.contains(event.target) && !menuButton.contains(event.target)) {
-    menu.hidden = true;
-    menuButton.setAttribute("aria-expanded", "false");
-  }
-});
-
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && !menu.hidden) {
-    menu.hidden = true;
-    menuButton.setAttribute("aria-expanded", "false");
-    menuButton.focus();
-  }
-});
-
-tabs.forEach((tab, index) => {
-  tab.addEventListener("click", () => activateTab(index));
-  tab.addEventListener("keydown", (event) => {
-    if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
-      event.preventDefault();
-      const next = (index + (event.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length;
-      activateTab(next);
-      tabs[next].focus();
-    }
-  });
-});
-
-function activateTab(index) {
+function activateTab(index, tabs, panels) {
   tabs.forEach((tab, tabIndex) => {
     const active = tabIndex === index;
     tab.classList.toggle("is-active", active);
     tab.setAttribute("aria-selected", String(active));
     tab.tabIndex = active ? 0 : -1;
-    panels[tabIndex].hidden = !active;
+    if (panels[tabIndex]) {
+      panels[tabIndex].hidden = !active;
+    }
   });
 }
-
-finishButton.addEventListener("click", () => {
-  const drill = currentPlanData.drills[activeWorkout];
-  if (!drill.variations || getSelectedVariations().size !== drill.variations.length || activeWorkout >= currentPlanData.drills.length - 1) return;
-  if (!completed.includes(activeWorkout)) {
-    completed.push(activeWorkout);
-    completed.sort((a, b) => a - b);
-  }
-  const saved = saveProgress();
-  activeWorkout += 1;
-  render();
-  if (!saved) sessionProgress.textContent = "PROGRESS COULD NOT BE SAVED ON THIS DEVICE.";
-});
-
-render();
-
 
 
 
@@ -1240,7 +1207,7 @@ document.addEventListener("keydown", (event) => {
 });
 
 // Tab selection function
-function activateTab(index) {
+function activateTab(index, tabs, panels) {
   tabs.forEach((tab, tabIndex) => {
     const active = tabIndex === index;
     tab.classList.toggle("is-active", active);
@@ -1254,21 +1221,122 @@ function activateTab(index) {
 
 // Initialize
 document.addEventListener("DOMContentLoaded", () => {
+  // Query DOM elements
+  const menuButton = document.querySelector("#workout-menu-button");
+  const menu = document.querySelector("#workout-menu");
+  const backButton = document.querySelector("#back-button");
+  const variationList = document.querySelector("#variation-list");
+  const finishButton = document.querySelector("#finish-button");
+  const tabs = [...document.querySelectorAll(".tab")];
+  const panels = [...document.querySelectorAll(".tab-panel")];
+
+  // Attach event listeners
+  if (menuButton && menu) {
+    menuButton.addEventListener("click", () => {
+      menu.hidden = !menu.hidden;
+      menuButton.setAttribute("aria-expanded", String(!menu.hidden));
+    });
+  }
+
+  if (backButton) {
+    backButton.addEventListener("click", () => {
+      if (activeWorkout === 0) return;
+      activeWorkout -= 1;
+      if (menu) menu.hidden = true;
+      if (menuButton) menuButton.setAttribute("aria-expanded", "false");
+      render();
+    });
+  }
+
+  if (menu && menuButton) {
+    document.addEventListener("click", (event) => {
+      if (!menu.hidden && !menu.contains(event.target) && !menuButton.contains(event.target)) {
+        menu.hidden = true;
+        menuButton.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
+
+  if (menu && menuButton) {
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !menu.hidden) {
+        menu.hidden = true;
+        menuButton.setAttribute("aria-expanded", "false");
+        menuButton.focus();
+      }
+    });
+  }
+
+  if (tabs.length > 0) {
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => activateTab(index, tabs, panels));
+      tab.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
+          event.preventDefault();
+          const next = (index + (event.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length;
+          activateTab(next, tabs, panels);
+          tabs[next].focus();
+        }
+      });
+    });
+  }
+
+  if (finishButton) {
+    finishButton.addEventListener("click", () => {
+      const drill = currentPlanData.drills[activeWorkout];
+      if (!drill.variations || getSelectedVariations().size !== drill.variations.length || activeWorkout >= currentPlanData.drills.length - 1) return;
+      if (!completed.includes(activeWorkout)) {
+        completed.push(activeWorkout);
+        completed.sort((a, b) => a - b);
+      }
+      const saved = saveProgress();
+      activeWorkout += 1;
+      render();
+      if (!saved) {
+        const sessionProgress = document.querySelector("#session-progress");
+        if (sessionProgress) sessionProgress.textContent = "PROGRESS COULD NOT BE SAVED ON THIS DEVICE.";
+      }
+    });
+  }
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowRight") {
+      activeWorkout += 1;
+      if (activeWorkout >= currentPlanData.drills.length) {
+        activeWorkout = currentPlanData.drills.length - 1;
+      }
+      render();
+    } else if (event.key === "ArrowLeft") {
+      if (activeWorkout === 0) return;
+      activeWorkout -= 1;
+      if (menu) menu.hidden = true;
+      if (menuButton) menuButton.setAttribute("aria-expanded", "false");
+      render();
+    }
+  });
+
+  // Initial render
   render();
   renderMenu();
-  initializeSwipeGestures();
   if (tabs.length > 0) {
-    activateTab(0);
+    activateTab(0, tabs, panels);
   }
 });
 
 // Initial render if DOM is already loaded
 if (document.readyState !== "loading") {
+  const menuButton = document.querySelector("#workout-menu-button");
+  const menu = document.querySelector("#workout-menu");
+  const backButton = document.querySelector("#back-button");
+  const variationList = document.querySelector("#variation-list");
+  const finishButton = document.querySelector("#finish-button");
+  const tabs = [...document.querySelectorAll(".tab")];
+  const panels = [...document.querySelectorAll(".tab-panel")];
+  
   render();
   renderMenu();
-  initializeSwipeGestures();
   if (tabs.length > 0) {
-    activateTab(0);
+    activateTab(0, tabs, panels);
   }
 }
 
