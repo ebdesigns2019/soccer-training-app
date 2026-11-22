@@ -640,7 +640,9 @@ function closeMenu() {
   }
 }
 
-function renderVariations(workout) {
+function renderVariations(drill) {
+  const variationList = document.querySelector("#variation-list");
+  if (!variationList) return;
   variationList.replaceChildren();
   const selectedVariations = getSelectedVariations();
   const nextIndex = drill.variations.findIndex((_, index) => !selectedVariations.has(index));
