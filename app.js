@@ -412,7 +412,11 @@ function setCurrentPlan(planId) {
   
   // Reset active workout to 0 and reload progress for this plan
   activeWorkout = 0;
-  currentMobilityVariationIndex = 0;  // Reset mobility variation index when switching plans
+  
+  // Restore or initialize mobility variation index for this plan
+  const variationKey = `fieldwork-plan-${planId}-mobility-variation`;
+  currentMobilityVariationIndex = parseInt(localStorage.getItem(variationKey)) || 0;
+  
   selectedVariationsByWorkout = currentPlanData.drills.map((drill, index) =>
     drill.variations ? readSelectedVariations(getStorageKeyForDrill(index), drill.variations.length) : new Set()
   );
@@ -784,6 +788,9 @@ function renderVariations(drill) {
       // For mobility layout, just show the image (allow viewing any variation)
       if (drill.layout === "mobility") {
         currentMobilityVariationIndex = index;
+        // Save the variation index for this plan
+        const variationKey = `fieldwork-plan-${currentPlanId}-mobility-variation`;
+        localStorage.setItem(variationKey, index.toString());
         render();
         variationList.querySelectorAll(".variation-select")[index].focus();
         return;
@@ -1209,11 +1216,6 @@ function renderProgress() {
 
 function render() {
   const drill = currentPlanData.drills[activeWorkout];
-  
-  // Reset mobility variation index when switching drills
-  if (drill.layout === "mobility") {
-    currentMobilityVariationIndex = 0;
-  }
   
   const hasDetails = Boolean(drill.variations);
   const selectedVariations = getSelectedVariations();
