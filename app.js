@@ -731,7 +731,7 @@ function renderMenu() {
 function closeMenu() {
   const menu = document.querySelector("#workout-menu");
   if (menu) {
-    menu.classList.remove("is-visible");
+    menu.hidden = true;
   }
 }
 
