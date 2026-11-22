@@ -1069,6 +1069,10 @@ function render() {
   if (currentPlanTitleEl) {
     currentPlanTitleEl.textContent = currentPlanData.name.toUpperCase();
   }
+  const currentDrillNameEl = document.querySelector("#current-drill-name");
+  if (currentDrillNameEl) {
+    currentDrillNameEl.textContent = titleMatch[1].toUpperCase();
+  }
   
   document.querySelector("#workout-title span").textContent = titleMatch[1];
   document.querySelector("#workout-title em").textContent = titleMatch[2] || "";
