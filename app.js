@@ -822,15 +822,30 @@ function renderVariations(drill) {
 
 function renderExerciseImage(drill) {
   const diagramWrap = document.querySelector("#diagram-wrap");
-  if (!diagramWrap || drill.layout !== "mobility") return;
+  if (!diagramWrap) return;
   
+  // For non-mobility drills, just ensure IMG is removed (SVG should stay visible)
+  if (drill.layout !== "mobility") {
+    const existingImg = diagramWrap.querySelector("img");
+    if (existingImg) {
+      existingImg.remove();
+    }
+    return;
+  }
+  
+  // For mobility drills, render the exercise image
   const variation = drill.variations[currentMobilityVariationIndex];
   
   if (!variation || !variation.image) return;
   
   console.log(`Rendering image for variation ${currentMobilityVariationIndex}: ${variation.name}`);
   
-  diagramWrap.replaceChildren();
+  // Remove any existing IMG elements
+  diagramWrap.querySelectorAll("img").forEach(img => img.remove());
+  
+  // Hide all SVG elements (they're in the HTML but we don't want them visible)
+  const svgs = diagramWrap.querySelectorAll("svg");
+  svgs.forEach(svg => svg.style.display = "none");
   
   const img = document.createElement("img");
   img.src = variation.image;
