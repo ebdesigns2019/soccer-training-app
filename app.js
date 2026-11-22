@@ -1030,14 +1030,22 @@ function renderSetupAndCoaching(drill) {
 }
 
 function renderProgress() {
-  progressDots.replaceChildren();
-  currentPlanData.drills.forEach((_, index) => {
-    const dot = document.createElement("span");
-    dot.className = `progress-dot${index === activeWorkout ? " is-current" : ""}${completed.includes(index) ? " is-done" : ""}`;
-    dot.setAttribute("aria-hidden", "true");
-    progressDots.append(dot);
-  });
-  sessionProgress.textContent = `${completed.length} OF ${currentPlanData.drills.length} DRILLS COMPLETE`;
+  const progressDots = document.querySelector("#progress-dots");
+  const sessionProgress = document.querySelector("#session-progress");
+  
+  if (progressDots) {
+    progressDots.replaceChildren();
+    currentPlanData.drills.forEach((_, index) => {
+      const dot = document.createElement("span");
+      dot.className = `progress-dot${index === activeWorkout ? " is-current" : ""}${completed.includes(index) ? " is-done" : ""}`;
+      dot.setAttribute("aria-hidden", "true");
+      progressDots.append(dot);
+    });
+  }
+  
+  if (sessionProgress) {
+    sessionProgress.textContent = `${completed.length} OF ${currentPlanData.drills.length} DRILLS COMPLETE`;
+  }
 }
 
 function render() {
