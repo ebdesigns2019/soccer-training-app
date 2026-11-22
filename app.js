@@ -831,12 +831,16 @@ function renderExerciseImage(drill) {
   const diagramWrap = document.querySelector("#diagram-wrap");
   if (!diagramWrap) return;
   
-  // For non-mobility drills, just ensure IMG is removed (SVG should stay visible)
+  // For non-mobility drills, show SVGs and remove any IMG elements
   if (drill.layout !== "mobility") {
+    // Remove any existing IMG elements
     const existingImg = diagramWrap.querySelector("img");
     if (existingImg) {
       existingImg.remove();
     }
+    // Show all SVG elements (they should be visible for cone drills)
+    const svgs = diagramWrap.querySelectorAll("svg");
+    svgs.forEach(svg => svg.style.display = "");
     return;
   }
   
