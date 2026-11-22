@@ -995,7 +995,7 @@ function renderPlyometricPreview(pattern) {
   document.querySelector("#plyo-sprint-label").toggleAttribute("hidden", pattern !== "broad-sprint");
 }
 
-function renderSetupAndCoaching(workout) {
+function renderSetupAndCoaching(drill) {
   const setupGrid = document.querySelector("#setup-grid");
   setupGrid.replaceChildren();
   drill.setup.forEach(([labelText, valueText, noteText]) => {
