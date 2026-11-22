@@ -586,6 +586,12 @@ function renderMenu() {
   const workoutList = document.querySelector("#workout-list");
   if (!workoutList) return;
   
+  // Update drill count display
+  const drillCount = document.querySelector("#drill-count");
+  if (drillCount) {
+    drillCount.textContent = `${currentPlanData.drills.length} DRILLS`;
+  }
+  
   workoutList.replaceChildren();
   
   workoutPlans.forEach((plan) => {
@@ -1036,6 +1042,16 @@ function render() {
   const finishButton = document.querySelector("#finish-button");
   const finishLabel = document.querySelector("#finish-label");
   const finishNote = document.querySelector("#finish-note");
+  
+  // Update plan name display
+  const currentPlanNameEl = document.querySelector("#current-plan-name");
+  if (currentPlanNameEl) {
+    currentPlanNameEl.textContent = currentPlanData.name.toUpperCase();
+  }
+  const currentPlanTitleEl = document.querySelector("#current-plan-title");
+  if (currentPlanTitleEl) {
+    currentPlanTitleEl.textContent = currentPlanData.name.toUpperCase();
+  }
   
   document.querySelector("#workout-title span").textContent = titleMatch[1];
   document.querySelector("#workout-title em").textContent = titleMatch[2] || "";
