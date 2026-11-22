@@ -584,7 +584,10 @@ function renderNavigationDisplay() {
 // ============================================
 function renderMenu() {
   const workoutList = document.querySelector("#workout-list");
-  if (!workoutList) return;
+  if (!workoutList) {
+    console.warn("renderMenu: workout-list element not found");
+    return;
+  }
   
   // Update drill count display
   const drillCount = document.querySelector("#drill-count");
@@ -593,6 +596,11 @@ function renderMenu() {
   }
   
   workoutList.replaceChildren();
+  
+  if (!workoutPlans || workoutPlans.length === 0) {
+    console.warn("renderMenu: workoutPlans is empty");
+    return;
+  }
   
   workoutPlans.forEach((plan) => {
     const button = document.createElement("button");
