@@ -711,7 +711,7 @@ function renderVariations(drill) {
   document.querySelector("#variation-count").textContent = String(drill.variations.length);
 }
 
-function updateRoutePreview(workout) {
+function updateRoutePreview(drill) {
   const selectedVariations = getSelectedVariations();
   const nextIndex = drill.variations.findIndex((_, index) => !selectedVariations.has(index));
   const previewIndex = nextIndex === -1 ? drill.variations.length - 1 : nextIndex;
