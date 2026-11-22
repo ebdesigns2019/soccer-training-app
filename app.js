@@ -1262,6 +1262,26 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // Handle nav item clicks (delegated from renderNavigationDisplay)
+  document.addEventListener("click", (event) => {
+    const navItem = event.target.closest(".nav-item");
+    if (!navItem) return;
+    
+    if (navItem.classList.contains("nav-next")) {
+      if (activeWorkout < currentPlanData.drills.length - 1) {
+        activeWorkout += 1;
+        render();
+      }
+    } else if (navItem.classList.contains("nav-previous")) {
+      if (activeWorkout > 0) {
+        activeWorkout -= 1;
+        if (menu) menu.hidden = true;
+        if (menuButton) menuButton.setAttribute("aria-expanded", "false");
+        render();
+      }
+    }
+  });
+
   // Initial render
   render();
   renderMenu();
